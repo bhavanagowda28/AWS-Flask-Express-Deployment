@@ -356,6 +356,7 @@ Check for unused Elastic IPs.
 Check for unused EBS volumes.
 Check for snapshots.
 Check for NAT Gateways or other chargeable resources.
+
 📚 Key DevOps Concepts Demonstrated
 
 This project demonstrates practical understanding of:
@@ -378,6 +379,8 @@ API communication
 Application troubleshooting
 Deployment verification
 AWS resource cleanup
+
+
 🧠 Troubleshooting Performed
 
 During deployment, the following issues were identified and resolved:
@@ -432,6 +435,112 @@ Then:
 npm install
 
 completed successfully.
+🎯 What I Learned
+
+Through this project, I practiced:
+
+Launching and configuring an AWS EC2 instance
+Working with Ubuntu Linux
+Connecting to EC2 using SSH
+Configuring AWS Security Groups
+Installing and configuring Nginx
+Running a Flask backend
+Running a Node.js/Express frontend
+Connecting Express with Flask
+Using REST APIs
+Testing applications using curl
+Using Git and GitHub
+Deploying a full-stack application on AWS
+Understanding reverse proxy architecture
+Troubleshooting networking and port issues
+Verifying application connectivity from both EC2 and the local machine
+Managing AWS resources and avoiding unnecessary costs
+💡 Key DevOps Concepts Demonstrated
+Reverse Proxy
+
+Nginx acts as a reverse proxy between the internet and the Express application.
+
+Client
+  ↓
+Nginx :80
+  ↓
+Express :3000
+Service Communication
+
+Express communicates with Flask internally:
+
+Express :3000
+       ↓
+Flask :5050
+Security
+
+Only the required public port was exposed:
+
+HTTP :80
+
+SSH access was restricted to the administrator's IP.
+
+🔗 GitHub Repository
+
+Repository:
+
+https://github.com/bhavanagowda28/AWS-Flask-Express-Deployment
+
+👩‍💻 Author
+
+Bhavana S Gowda
+
+Civil Engineering graduate transitioning into DevOps.
+
+Areas of interest:
+
+AWS
+Linux
+Git & GitHub
+Jenkins
+Docker
+Kubernetes
+Terraform
+CI/CD
+DevOps
+
+
+⭐ Project Summary
+
+This project demonstrates a complete deployment of a Flask backend and Express frontend on a single AWS EC2 instance.
+
+The application was successfully tested through:
+
+Flask API
+     ↓
+Express
+     ↓
+Nginx
+     ↓
+AWS EC2
+     ↓
+Internet
+
+The deployment was verified using command-line tests and a web browser.
+
+
+### One important change before you push
+
+Because your README currently has your **actual EC2 public IP** only in screenshots/commands, I recommend keeping the README generic as:
+
+```text
+http://<EC2-PUBLIC-IP>
+
+rather than permanently documenting 3.110.153.93. Your EC2 public IP can change, and you're terminating the instance anyway.
+
+Also make sure your .gitignore contains:
+
+venv/
+__pycache__/
+*.pyc
+node_modules/
+.DS_Store
+.env
 
 🎯 Project Outcome
 
