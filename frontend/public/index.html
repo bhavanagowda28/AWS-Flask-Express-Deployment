@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AWS Flask + Express Demo</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .box {
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            background: #eeeeee;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        pre {
+            background: #eeeeee;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>AWS Flask + Express Demo</h1>
+
+
+    <div class="box">
+
+        <strong>Frontend:</strong>
+
+        Express / Node.js
+
+    </div>
+
+
+    <div class="box">
+
+        <strong>Backend:</strong>
+
+        Flask / Python
+
+    </div>
+
+
+    <button onclick="checkBackend()">
+
+        Check Flask Backend
+
+    </button>
+
+
+    <h3>Backend Response</h3>
+
+    <pre id="result">
+
+Click the button to test the Flask backend.
+
+    </pre>
+
+</div>
+
+
+<script>
+
+async function checkBackend() {
+
+    const result =
+        document.getElementById("result");
+
+
+    result.textContent =
+        "Checking Flask backend...";
+
+
+    try {
+
+        const response =
+            await fetch("/api/backend");
+
+
+        const data =
+            await response.json();
+
+
+        result.textContent =
+            JSON.stringify(data, null, 2);
+
+
+    } catch (error) {
+
+        result.textContent =
+            "Backend connection failed: "
+            + error.message;
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
+
+
+
