@@ -46,25 +46,8 @@ The Express frontend serves the web application and communicates with the Flask 
                             |
                             v
                     JSON API Response
-
-Browser
-   |
-   | HTTP :80
-   v
-Nginx
-   |
-   | proxy_pass
-   v
-Express :3000
-   |
-   | fetch()
-   v
-Flask :5050
-   |
-   v
-JSON Response
-
-| Technology       | Purpose                      |
+  
+**Technology       | Purpose    **                  
 | ---------------- | ---------------------------- |
 | AWS EC2          | Cloud compute server         |
 | Ubuntu 24.04 LTS | Operating system             |
@@ -77,6 +60,8 @@ JSON Response
 | Git              | Version control              |
 | GitHub           | Source code repository       |
 | Linux            | Server administration        |
+
+**Project Structure**
 
 AWS-Flask-Express-Deployment/
 │
@@ -102,18 +87,34 @@ AWS-Flask-Express-Deployment/
 │
 ├── .gitignore
 └── README.md
+
+****🚀 Local Development**
+
+**1. Clone the Repository**
 git clone https://github.com/bhavanagowda28/AWS-Flask-Express-Deployment.git
 cd AWS-Flask-Express-Deployment
+🐍 Backend - Flask
+**2. Navigate to Backend**
 cd backend
+**3. Create Python Virtual Environment**
 python3 -m venv venv
+**4. Activate Virtual Environment**
 source venv/bin/activate
+**5. Install Dependencies**
 pip install -r requirements.txt
+**6. Start Flask**
 python3 app.py
+Flask runs on:
 http://localhost:5050
+**🔌 Flask API Endpoints**
+Home
 GET /
+Example response:
 {
   "message": "Flask Backend is running!"
 }
+Health Check
+Example response:
 GET /api/hello
 {
   "message": "Hello from Flask Backend!",
@@ -123,7 +124,87 @@ GET /api/health
 {
   "status": "healthy"
 }
-🧪 Deployment Verification
+Example response:
+
+{
+  "message": "Hello from Flask Backend!",
+  "status": "success"
+}
+☁️ AWS EC2 Deployment
+10. EC2 Instance
+
+The application was deployed on:
+
+Amazon EC2
+Region: Asia Pacific (Mumbai)
+Operating System: Ubuntu Server 24.04 LTS
+
+The EC2 instance was configured to host both:
+
+Express.js → Port 3000
+Flask → Port 5050
+Nginx → Port 80
+🔐 Security Group Configuration
+
+The EC2 Security Group was configured with the following inbound rules:
+
+Type	Protocol	Port	Source
+SSH	TCP	22	My IP
+HTTP	TCP	80	0.0.0.0/0
+
+SSH access was restricted to the local public IP used during deployment.
+
+HTTP port 80 was opened so that the deployed application could be accessed through a web browser.
+
+🌐 Nginx Configuration
+
+Nginx was used as the public-facing web server.
+
+Instead of exposing Express directly on port 3000, requests arrive at:
+
+http://EC2-PUBLIC-IP
+
+on port:
+
+80
+
+Nginx forwards the requests to Express:
+
+http://127.0.0.1:3000
+
+Example reverse proxy configuration:
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+After modifying the configuration:
+
+sudo nginx -t
+
+Then reload:
+
+sudo systemctl reload nginx
+
+Check Nginx:
+
+sudo systemctl status nginx --no-pager
+
+**🧪 Deployment Verification**
 
 The deployment was verified using multiple tests.
 
@@ -199,7 +280,8 @@ Expected:
 HTTP/1.1 200 OK
 Server: nginx
 X-Powered-By: Express
-✅ Final Deployment Result
+
+**✅ Final Deployment Result**
 
 The application was successfully tested through the EC2 public IP.
 
