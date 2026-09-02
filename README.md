@@ -1,23 +1,27 @@
-# AWS Flask + Express Deployment on EC2
+# AWS Flask + Express Full-Stack Deployment on EC2
 
-A full-stack deployment project demonstrating how to deploy a **Flask Python backend** and an **Express.js frontend** on a single **Amazon EC2 instance**, with **Nginx** configured as a reverse proxy.
+A full-stack web application deployed on **Amazon EC2**, consisting of a **Flask backend** and an **Express.js frontend**, with **Nginx configured as a reverse proxy**.
+
+The project demonstrates Linux server administration, AWS EC2 deployment, application-to-application communication, reverse proxy configuration, networking, API testing, and troubleshooting.
 
 ---
 
 ## 📌 Project Overview
 
-This project demonstrates the deployment of a simple full-stack application on AWS.
+This project demonstrates how to deploy a full-stack application on a single AWS EC2 instance.
 
-The application consists of:
+### Application Components
 
-- **Frontend:** Node.js + Express.js
-- **Backend:** Python + Flask
-- **Web Server / Reverse Proxy:** Nginx
-- **Cloud Platform:** AWS EC2
-- **Operating System:** Ubuntu Server 24.04 LTS
-- **Version Control:** Git + GitHub
+* **Frontend:** Node.js + Express.js
+* **Backend:** Python + Flask
+* **Web Server:** Nginx
+* **Cloud Platform:** Amazon EC2
+* **Operating System:** Ubuntu Server 24.04 LTS
+* **Version Control:** Git + GitHub
+* **API Communication:** Express.js → Flask
+* **Testing:** Browser + cURL
 
-The Express frontend serves the web application and communicates with the Flask backend through an internal API.
+The application is accessed through Nginx on HTTP port `80`.
 
 ---
 
@@ -27,7 +31,7 @@ The Express frontend serves the web application and communicates with the Flask 
                          Internet
                             |
                             |
-                    EC2 Public IP :80
+                     EC2 Public IP :80
                             |
                             v
                     +---------------+
@@ -45,30 +49,56 @@ The Express frontend serves the web application and communicates with the Flask 
                     Backend Server
                             |
                             v
-                    JSON API Response
-  
-**Technology       | Purpose    **                  
+                       JSON Response
+```
+
+### Request Flow
+
+```text
+Client
+  |
+  v
+Nginx :80
+  |
+  v
+Express.js :3000
+  |
+  v
+Flask :5050
+  |
+  v
+JSON Response
+```
+
+---
+
+## 🛠️ Technologies Used
+
+| Technology       | Purpose                      |
 | ---------------- | ---------------------------- |
 | AWS EC2          | Cloud compute server         |
-| Ubuntu 24.04 LTS | Operating system             |
+| Ubuntu 24.04 LTS | Server operating system      |
+| Linux            | Server administration        |
 | Nginx            | Web server and reverse proxy |
 | Node.js          | JavaScript runtime           |
 | Express.js       | Frontend/server application  |
 | Python           | Backend programming language |
-| Flask            | Backend REST API             |
+| Flask            | REST API backend             |
 | Flask-CORS       | Cross-origin request support |
 | Git              | Version control              |
 | GitHub           | Source code repository       |
-| Linux            | Server administration        |
+| cURL             | API and connectivity testing |
 
-**Project Structure**
+---
 
+## 📁 Project Structure
+
+```text
 AWS-Flask-Express-Deployment/
 │
 ├── backend/
 │   ├── app.py
-│   ├── requirements.txt
-│   └── venv/
+│   └── requirements.txt
 │
 ├── frontend/
 │   ├── public/
@@ -87,93 +117,192 @@ AWS-Flask-Express-Deployment/
 │
 ├── .gitignore
 └── README.md
+```
 
-****🚀 Local Development**
+> The Python virtual environment and `node_modules` should not be committed to GitHub. They are recreated during setup.
 
-**1. Clone the Repository**
+---
+
+# 🚀 Local Development
+
+## 1. Clone the Repository
+
+```bash
 git clone https://github.com/bhavanagowda28/AWS-Flask-Express-Deployment.git
 cd AWS-Flask-Express-Deployment
-🐍 Backend - Flask
-**2. Navigate to Backend**
+```
+
+---
+
+# 🐍 Backend – Flask
+
+## 2. Navigate to the Backend
+
+```bash
 cd backend
-**3. Create Python Virtual Environment**
+```
+
+## 3. Create a Python Virtual Environment
+
+```bash
 python3 -m venv venv
-**4. Activate Virtual Environment**
+```
+
+## 4. Activate the Virtual Environment
+
+### macOS / Linux
+
+```bash
 source venv/bin/activate
-**5. Install Dependencies**
+```
+
+## 5. Install Dependencies
+
+```bash
 pip install -r requirements.txt
-**6. Start Flask**
+```
+
+## 6. Start Flask
+
+```bash
 python3 app.py
-Flask runs on:
+```
+
+The Flask backend runs on:
+
+```text
 http://localhost:5050
-**🔌 Flask API Endpoints**
-Home
+```
+
+---
+
+# 🔌 Flask API Endpoints
+
+## Home Endpoint
+
+```text
 GET /
+```
+
 Example response:
+
+```json
 {
   "message": "Flask Backend is running!"
 }
-Health Check
-Example response:
+```
+
+## Hello API
+
+```text
 GET /api/hello
+```
+
+Example response:
+
+```json
 {
   "message": "Hello from Flask Backend!",
   "status": "success"
 }
+```
+
+## Health Check
+
+```text
 GET /api/health
+```
+
+Example response:
+
+```json
 {
   "status": "healthy"
 }
-Example response:
+```
 
-{
-  "message": "Hello from Flask Backend!",
-  "status": "success"
-}
-☁️ AWS EC2 Deployment
-10. EC2 Instance
+---
+
+# 🟢 Frontend – Express.js
+
+Open a new terminal and navigate to the frontend:
+
+```bash
+cd frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the Express server:
+
+```bash
+node server.js
+```
+
+The Express application runs on:
+
+```text
+http://localhost:3000
+```
+
+---
+
+# ☁️ AWS EC2 Deployment
 
 The application was deployed on:
 
-Amazon EC2
-Region: Asia Pacific (Mumbai)
-Operating System: Ubuntu Server 24.04 LTS
+* **AWS Service:** Amazon EC2
+* **Region:** Asia Pacific (Mumbai)
+* **Operating System:** Ubuntu Server 24.04 LTS
 
-The EC2 instance was configured to host both:
+The EC2 instance hosted both the Express frontend and Flask backend.
 
-Express.js → Port 3000
-Flask → Port 5050
-Nginx → Port 80
-🔐 Security Group Configuration
+### Application Ports
+
+| Service    | Port | Purpose              |
+| ---------- | ---: | -------------------- |
+| Nginx      |   80 | Public HTTP access   |
+| Express.js | 3000 | Frontend application |
+| Flask      | 5050 | Backend API          |
+
+---
+
+# 🔐 AWS Security Group
 
 The EC2 Security Group was configured with the following inbound rules:
 
-Type	Protocol	Port	Source
-SSH	TCP	22	My IP
-HTTP	TCP	80	0.0.0.0/0
+| Type | Protocol | Port | Source    |
+| ---- | -------- | ---: | --------- |
+| SSH  | TCP      |   22 | My IP     |
+| HTTP | TCP      |   80 | 0.0.0.0/0 |
 
-SSH access was restricted to the local public IP used during deployment.
+SSH access was restricted to the administrator's public IP.
 
-HTTP port 80 was opened so that the deployed application could be accessed through a web browser.
+HTTP port `80` was exposed to allow users to access the application through a web browser.
 
-🌐 Nginx Configuration
+The Flask and Express application ports were not required to be publicly exposed because Nginx handled public HTTP traffic.
 
-Nginx was used as the public-facing web server.
+---
 
-Instead of exposing Express directly on port 3000, requests arrive at:
+# 🌐 Nginx Reverse Proxy
 
-http://EC2-PUBLIC-IP
+Nginx was configured as the public-facing web server.
 
-on port:
+Users access:
 
-80
+```text
+http://<EC2-PUBLIC-IP>
+```
 
-Nginx forwards the requests to Express:
+Nginx listens on port `80` and forwards requests to Express running on port `3000`.
 
-http://127.0.0.1:3000
+### Nginx Configuration
 
-Example reverse proxy configuration:
-
+```nginx
 server {
     listen 80;
     listen [::]:80;
@@ -182,7 +311,6 @@ server {
 
     location / {
         proxy_pass http://127.0.0.1:3000;
-
         proxy_http_version 1.1;
 
         proxy_set_header Host $host;
@@ -191,383 +319,462 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+```
 
 After modifying the configuration:
 
+```bash
 sudo nginx -t
+```
 
-Then reload:
+Reload Nginx:
 
+```bash
 sudo systemctl reload nginx
+```
 
-Check Nginx:
+Check Nginx status:
 
+```bash
 sudo systemctl status nginx --no-pager
+```
 
-**🧪 Deployment Verification**
+---
 
-The deployment was verified using multiple tests.
+# 🧪 Deployment Verification
 
-Check Nginx
+The deployment was verified using several connectivity and API tests.
+
+## 1. Check Nginx
+
+```bash
 sudo systemctl status nginx --no-pager
+```
 
 Expected:
 
+```text
 Active: active (running)
-Check Port 80
+```
+
+## 2. Check Port 80
+
+```bash
 sudo ss -lntp | grep ':80'
+```
 
 Expected:
 
+```text
 0.0.0.0:80
 [::]:80
-Check Flask
+```
+
+## 3. Test Flask
+
+```bash
 curl http://localhost:5050
+```
 
 Expected:
 
+```json
 {
   "message": "Flask Backend is running!"
 }
-Check Flask Hello API
+```
+
+## 4. Test Flask Hello API
+
+```bash
 curl http://localhost:5050/api/hello
+```
 
 Expected:
 
+```json
 {
   "message": "Hello from Flask Backend!",
   "status": "success"
 }
-Check Flask Health
+```
+
+## 5. Test Flask Health API
+
+```bash
 curl http://localhost:5050/api/health
+```
 
 Expected:
 
+```json
 {
   "status": "healthy"
 }
-Check Express
+```
+
+## 6. Test Express
+
+```bash
 curl http://localhost:3000/api/frontend
+```
 
 Expected:
 
+```json
 {
   "message": "Express Frontend is running!",
   "status": "success"
 }
-Check Express → Flask Communication
+```
+
+## 7. Test Express → Flask Communication
+
+```bash
 curl http://localhost:3000/api/backend
+```
 
 Expected:
 
+```json
 {
   "message": "Hello from Flask Backend!",
   "status": "success"
 }
-Check Nginx → Express
+```
+
+This confirms that the Express application successfully communicates with the Flask backend.
+
+## 8. Test Nginx → Express
+
+```bash
 curl -I http://localhost
+```
 
 Expected:
 
+```text
 HTTP/1.1 200 OK
 Server: nginx
 X-Powered-By: Express
-Check Public IP
-curl -I http://EC2-PUBLIC-IP
+```
+
+## 9. Test the Public EC2 Endpoint
+
+```bash
+curl -I http://<EC2-PUBLIC-IP>
+```
 
 Expected:
 
+```text
 HTTP/1.1 200 OK
 Server: nginx
 X-Powered-By: Express
+```
 
-**✅ Final Deployment Result**
+---
 
-The application was successfully tested through the EC2 public IP.
+# ✅ Final Deployment Result
+
+The application was successfully deployed and tested through the EC2 public IP.
 
 Final request flow:
 
-http://EC2-PUBLIC-IP
-        |
-        v
-      Nginx
-        |
-        v
- Express :3000
-        |
-        v
- Flask :5050
-        |
-        v
- JSON Response
+```text
+Internet
+   |
+   v
+AWS EC2
+   |
+   v
+Nginx :80
+   |
+   v
+Express.js :3000
+   |
+   v
+Flask :5050
+   |
+   v
+JSON Response
+```
 
 The frontend successfully communicated with the Flask backend and returned:
 
+```json
 {
   "message": "Hello from Flask Backend!",
   "status": "success"
 }
-📸 Screenshots
+```
 
-The screenshots/ directory contains deployment evidence, including:
+---
 
-Flask backend running locally
-Flask API response
-Express server running
-Full-stack local test
-EC2 instance configuration
-Security Group configuration
-Nginx configuration
-Docker/project-related screenshots where applicable
-Final AWS deployed frontend
-Flask backend response from the deployed application
+# 📸 Screenshots
 
-These screenshots demonstrate the application setup, configuration and successful deployment.
+The `screenshots/` directory contains evidence of the development and deployment process, including:
 
-🔒 Security Considerations
+* Flask running locally
+* Flask API response
+* Express server running
+* Full-stack local testing
+* AWS EC2 deployment
+* Security Group configuration
+* Nginx configuration
+* Final deployed frontend
+* Express → Flask API communication
 
-The following security practices were used:
+These screenshots provide visual evidence of the application's setup, deployment, and successful testing.
 
-SSH access restricted to the current public IP.
-HTTP traffic exposed through port 80.
-Flask backend was bound to the EC2 server and accessed by Express internally.
-Express communicated with Flask using localhost.
-Private key permissions were restricted using:
-chmod 400 AWS-Bhavana-Task1-Key.pem
-AWS resources should be terminated when they are no longer required to avoid unnecessary charges.
-💰 AWS Cost Consideration
+---
 
-This project was deployed on an AWS EC2 instance without relying on Free Tier availability.
+# 🔒 Security Considerations
 
-Therefore, the EC2 instance was used only for deployment and testing.
+The following security practices were followed:
 
-After completing testing, the EC2 instance can be terminated to prevent additional compute charges.
+* SSH access was restricted to the administrator's IP.
+* Only HTTP port `80` was exposed publicly.
+* Flask was accessed internally by Express.
+* Express communicated with Flask through localhost.
+* The EC2 private key was protected using appropriate file permissions.
 
-Before terminating AWS resources, make sure all required source code and screenshots have been pushed to GitHub.
+Example:
 
-🧹 Cleanup
+```bash
+chmod 400 <your-key-file>.pem
+```
 
-After completing the deployment and taking screenshots:
+> Never commit `.pem` files, passwords, API keys, credentials, or `.env` files to GitHub.
 
-Push the project to GitHub.
-Verify all files are available in the repository.
-Terminate the EC2 instance.
-Check for unused Elastic IPs.
-Check for unused EBS volumes.
-Check for snapshots.
-Check for NAT Gateways or other chargeable resources.
+---
 
-📚 Key DevOps Concepts Demonstrated
+# 🧹 AWS Cleanup
 
-This project demonstrates practical understanding of:
+Because the EC2 instance was used for deployment and testing, AWS resources should be cleaned up after completing the project.
 
-Linux server administration
-AWS EC2
-SSH
-Security Groups
-Public and private networking
-Git
-GitHub
-Python virtual environments
-Flask REST APIs
-Node.js
-Express.js
-Nginx
-Reverse proxy
-Port management
-API communication
-Application troubleshooting
-Deployment verification
-AWS resource cleanup
+Before cleanup:
 
+1. Push all required source code to GitHub.
+2. Verify the README and screenshots.
+3. Verify that no sensitive files were committed.
+4. Terminate the EC2 instance.
+5. Check for unused Elastic IP addresses.
+6. Check for unused EBS volumes.
+7. Check for snapshots or other chargeable resources.
+8. Check the AWS Billing dashboard for remaining resources.
 
-🧠 Troubleshooting Performed
+> Terminating an EC2 instance stops compute usage, but other AWS resources can continue generating charges if they remain active.
 
-During deployment, the following issues were identified and resolved:
+---
 
-1. SSH Connection Issue
+# 🛠️ Troubleshooting Performed
 
-SSH access initially failed because the Security Group configuration and source IP needed to be verified.
+## SSH Connection Issue
 
-The SSH rule was configured to allow the current public IP.
+SSH access initially failed because the Security Group and source IP configuration needed to be verified.
 
-2. Nginx Browser Timeout
+The Security Group was updated to allow SSH from the current public IP.
 
-Nginx was confirmed to be listening on port 80:
+---
 
+## Nginx Browser Timeout
+
+Nginx was checked using:
+
+```bash
 sudo ss -lntp | grep ':80'
+```
 
-The EC2 public IP was then tested using curl.
+The EC2 public IP was then tested using:
 
-The public IP returned:
+```bash
+curl -I http://<EC2-PUBLIC-IP>
+```
 
+The server returned:
+
+```text
 HTTP/1.1 200 OK
+```
 
-This confirmed that the AWS network, Nginx and application were responding correctly.
+This confirmed that the EC2 network, Nginx, and application were responding correctly.
 
-3. Flask Port Conflict
+---
+
+## Flask Port Conflict
 
 Flask reported:
 
+```text
 Address already in use
 Port 5050 is in use by another program.
+```
 
-The process was identified using:
+The process using the port was identified using:
 
+```bash
 sudo ss -lntp | grep ':5050'
+```
 
-The running Flask process was confirmed and the API was tested successfully.
+The existing Flask process was identified and the API was tested successfully.
 
-4. npm Installation Directory
+---
+
+## npm Installation Directory Issue
 
 Running:
 
+```bash
 npm install
+```
 
-from /home/ubuntu failed because there was no package.json in that directory.
+from the home directory failed because there was no `package.json` there.
 
 The correct directory was:
 
+```bash
 cd ~/AWS-Flask-Express-Deployment/frontend
+```
 
 Then:
 
+```bash
 npm install
+```
 
 completed successfully.
-🎯 What I Learned
+
+---
+
+# 🎯 Key DevOps Concepts Demonstrated
+
+This project provided practical experience with:
+
+* AWS EC2
+* Linux server administration
+* SSH
+* AWS Security Groups
+* Public and private networking
+* Git and GitHub
+* Python virtual environments
+* Flask REST APIs
+* Node.js
+* Express.js
+* Nginx
+* Reverse proxy
+* Port management
+* Application communication
+* cURL testing
+* Troubleshooting
+* Deployment verification
+* AWS resource cleanup
+
+---
+
+# 📚 What I Learned
 
 Through this project, I practiced:
 
-Launching and configuring an AWS EC2 instance
-Working with Ubuntu Linux
-Connecting to EC2 using SSH
-Configuring AWS Security Groups
-Installing and configuring Nginx
-Running a Flask backend
-Running a Node.js/Express frontend
-Connecting Express with Flask
-Using REST APIs
-Testing applications using curl
-Using Git and GitHub
-Deploying a full-stack application on AWS
-Understanding reverse proxy architecture
-Troubleshooting networking and port issues
-Verifying application connectivity from both EC2 and the local machine
-Managing AWS resources and avoiding unnecessary costs
-💡 Key DevOps Concepts Demonstrated
-Reverse Proxy
+1. Launching and configuring an EC2 instance.
+2. Working with Ubuntu Linux.
+3. Connecting to an EC2 server using SSH.
+4. Configuring AWS Security Groups.
+5. Installing and configuring Nginx.
+6. Deploying a Flask backend.
+7. Deploying an Express.js frontend.
+8. Connecting Express.js with Flask.
+9. Testing REST APIs using cURL.
+10. Configuring Nginx as a reverse proxy.
+11. Troubleshooting networking and port issues.
+12. Using Git and GitHub for source-code management.
+13. Verifying application connectivity.
+14. Managing AWS resources responsibly.
 
-Nginx acts as a reverse proxy between the internet and the Express application.
+---
 
+# 💡 Key Architecture Concepts
+
+### Reverse Proxy
+
+Nginx acts as the reverse proxy between the internet and the Express application.
+
+```text
 Client
-  ↓
+  |
+  v
 Nginx :80
-  ↓
+  |
+  v
 Express :3000
-Service Communication
+```
 
-Express communicates with Flask internally:
+### Service Communication
 
+Express communicates with the Flask backend internally:
+
+```text
 Express :3000
-       ↓
+       |
+       v
 Flask :5050
-Security
+```
 
-Only the required public port was exposed:
+### Public Access
 
-HTTP :80
-
-SSH access was restricted to the administrator's IP.
-
-🔗 GitHub Repository
-
-Repository:
-
-https://github.com/bhavanagowda28/AWS-Flask-Express-Deployment
-
-👩‍💻 Author
-
-Bhavana S Gowda
-
-Civil Engineering graduate transitioning into DevOps.
-
-Areas of interest:
-
-AWS
-Linux
-Git & GitHub
-Jenkins
-Docker
-Kubernetes
-Terraform
-CI/CD
-DevOps
-
-
-⭐ Project Summary
-
-This project demonstrates a complete deployment of a Flask backend and Express frontend on a single AWS EC2 instance.
-
-The application was successfully tested through:
-
-Flask API
-     ↓
-Express
-     ↓
-Nginx
-     ↓
-AWS EC2
-     ↓
-Internet
-
-The deployment was verified using command-line tests and a web browser.
-
-
-### One important change before you push
-
-Because your README currently has your **actual EC2 public IP** only in screenshots/commands, I recommend keeping the README generic as:
+The user only needs to access:
 
 ```text
 http://<EC2-PUBLIC-IP>
+```
 
-rather than permanently documenting 3.110.153.93. Your EC2 public IP can change, and you're terminating the instance anyway.
+Nginx handles the incoming HTTP request and forwards it to the Express application.
 
-Also make sure your .gitignore contains:
+---
 
-venv/
-__pycache__/
-*.pyc
-node_modules/
-.DS_Store
-.env
+# 🎯 Project Outcome
 
-🎯 Project Outcome
+Successfully deployed a full-stack **Flask + Express.js application on a single AWS EC2 instance**.
 
-Successfully deployed a full-stack Flask + Express application on a single AWS EC2 instance.
+The project demonstrates how a public HTTP request travels through Nginx to an Express frontend, which communicates with a Flask backend through an internal API.
 
-The project demonstrates how a public HTTP request can travel through Nginx to an Express frontend and then communicate with a Flask backend through an internal API.
-
+```text
                     AWS EC2
-        ┌─────────────────────────────┐
-        │                             │
-Internet│ → Nginx :80                │
-        │       ↓                     │
-        │   Express :3000             │
-        │       ↓                     │
-        │    Flask :5050              │
-        │                             │
-        └─────────────────────────────┘
-👩‍💻 Author
+        ┌──────────────────────────────┐
+        │                              │
+Internet│ → Nginx :80                 │
+        │       ↓                      │
+        │   Express :3000              │
+        │       ↓                      │
+        │    Flask :5050               │
+        │                              │
+        └──────────────────────────────┘
+```
 
-Bhavana S Gowda
+---
+
+# 👩‍💻 Author
+
+**Bhavana S Gowda**
 
 DevOps / Cloud Engineering Learner
 
-GitHub:
+### Areas of Interest
+
+* AWS
+* Linux
+* Git & GitHub
+* Jenkins
+* Docker
+* Kubernetes
+* Terraform
+* CI/CD
+* DevOps
+
+### GitHub
 
 https://github.com/bhavanagowda28
 
-Project Repository:
+### Project Repository
 
 https://github.com/bhavanagowda28/AWS-Flask-Express-Deployment
