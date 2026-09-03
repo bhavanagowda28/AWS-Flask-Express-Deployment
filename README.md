@@ -1,14 +1,72 @@
-# AWS Flask + Express Deployment – 3 Deployment Scenarios
+# AWS Flask + Express Deployment
 
 ## Project Overview
 
-This project demonstrates deployment of a Flask backend and Express frontend on AWS using three different deployment approaches:
+This project demonstrates the deployment of a full-stack application consisting of:
 
-1. **Single EC2 Instance** – Flask backend and Express frontend deployed on the same EC2 instance.
-2. **Separate EC2 Instances** – Flask backend and Express frontend deployed on separate EC2 instances.
-3. **Containerized Deployment** – Flask backend and Express frontend containerized using Docker and deployed using Amazon ECR, Amazon ECS Fargate and Amazon VPC.
+* **Flask** backend
+* **Express.js** frontend
+* **Docker**
+* **Amazon ECR**
+* **Amazon ECS / Fargate**
+* **Amazon VPC**
+* **Amazon EC2**
 
-The project also demonstrates Docker image creation, Amazon ECR, ECS task definitions, Fargate networking, security groups, VPC routing and CloudWatch logging.
+The assignment was completed in three deployment scenarios:
+
+1. Flask backend and Express frontend on a **single EC2 instance**
+2. Flask backend and Express frontend on **separate EC2 instances**
+3. Flask backend and Express frontend using **Docker containers with ECR, ECS and VPC**
+
+---
+
+# Application Architecture
+
+```text
+                    AWS DEPLOYMENT
+                         |
+          +--------------+--------------+
+          |              |              |
+       Task 1         Task 2         Task 3
+          |              |              |
+     Single EC2     Separate EC2    Dockerized
+          |          Instances        |
+     +----+----+     +------+-----+    |
+     |         |     |            |    |
+  Flask    Express Flask       Express ECR
+ Backend   Frontend Backend    Frontend  |
+                                      ECS/Fargate
+                                          |
+                                         VPC
+```
+
+---
+
+# Technologies Used
+
+## Application
+
+* Python
+* Flask
+* Flask-CORS
+* Node.js
+* Express.js
+* JavaScript
+* HTML
+
+## DevOps / Cloud
+
+* Git
+* GitHub
+* Docker
+* Docker Compose
+* Amazon EC2
+* Amazon ECR
+* Amazon ECS
+* AWS Fargate
+* Amazon VPC
+* Security Groups
+* CloudWatch Logs
 
 ---
 
@@ -19,13 +77,15 @@ AWS-Flask-Express-Deployment/
 │
 ├── backend/
 │   ├── app.py
-│   ├── Dockerfile
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── Dockerfile
 │
 ├── frontend/
 │   ├── server.js
 │   ├── package.json
 │   └── Dockerfile
+│
+├── docker-compose.yml
 │
 ├── screenshots/
 │   ├── task1/
@@ -37,41 +97,17 @@ AWS-Flask-Express-Deployment/
 
 ---
 
-# Technologies Used
+# Flask Backend
 
-* Python
-* Flask
-* Flask-CORS
-* Node.js
-* Express.js
-* HTML/CSS/JavaScript
-* Linux
-* Git
-* GitHub
-* Docker
-* Amazon EC2
-* Amazon ECR
-* Amazon ECS
-* AWS Fargate
-* Amazon VPC
-* Security Groups
-* Network ACL
-* Internet Gateway
-* CloudWatch Logs
+The Flask backend provides the following API endpoints:
 
----
-
-# Application
-
-## Flask Backend
-
-The Flask backend provides the following endpoints:
+### Home
 
 ```text
 /
 ```
 
-Returns:
+Response:
 
 ```json
 {
@@ -85,7 +121,7 @@ Returns:
 /api/hello
 ```
 
-Returns:
+Response:
 
 ```json
 {
@@ -100,7 +136,7 @@ Returns:
 /api/health
 ```
 
-Returns:
+Response:
 
 ```json
 {
@@ -116,37 +152,50 @@ The Flask application runs on:
 
 ---
 
-# Task 1 – Flask Backend and Express Frontend on a Single EC2 Instance
+# Task 1 — Flask Backend + Express Frontend on Single EC2
 
 ## Objective
 
-Deploy both the Flask backend and Express frontend on one Amazon EC2 instance.
+Deploy both the Flask backend and Express frontend on a single Amazon EC2 instance.
 
-## Deployment Process
+## Deployment
 
-The application source code was copied to the EC2 instance.
+An EC2 instance was created and configured with the required software.
 
-The required dependencies were installed and both applications were configured to run on the EC2 server.
-
-The Flask backend was configured to listen on:
+The application components were deployed on the same EC2 machine:
 
 ```text
-Port 5050
+EC2 Instance
+│
+├── Flask Backend
+│   └── Port 5050
+│
+└── Express Frontend
+    └── Frontend Port
 ```
 
-The Express frontend was configured to run on its assigned application port.
+## Steps Performed
 
-The EC2 Security Group was configured to allow the required application traffic.
+1. Created an EC2 instance.
+2. Connected to the instance using SSH.
+3. Installed the required dependencies.
+4. Copied the Flask backend to the EC2 instance.
+5. Copied the Express frontend to the EC2 instance.
+6. Installed Python and Node.js dependencies.
+7. Started the Flask backend.
+8. Started the Express frontend.
+9. Configured the EC2 Security Group.
+10. Tested the application using the public IP address.
 
-## Verification
+## Backend Test
 
-The backend API was tested using:
+The Flask backend was tested using:
 
 ```bash
 curl http://localhost:5050/api/hello
 ```
 
-Successful response:
+Expected response:
 
 ```json
 {
@@ -155,9 +204,11 @@ Successful response:
 }
 ```
 
-The frontend was accessed through the EC2 public IP address.
+## Result
 
-## Evidence
+The single EC2 deployment was successfully tested.
+
+### Evidence
 
 Screenshots for Task 1 are available in:
 
@@ -165,78 +216,69 @@ Screenshots for Task 1 are available in:
 screenshots/task1/
 ```
 
-The screenshots contain the EC2 instance, terminal commands, application output and deployment verification.
-
 ---
 
-# Task 2 – Flask Backend and Express Frontend on Separate EC2 Instances
+# Task 2 — Flask Backend + Express Frontend on Separate EC2 Instances
 
 ## Objective
 
-Deploy the Flask backend and Express frontend on two separate Amazon EC2 instances.
+Deploy the Flask backend and Express frontend on two separate EC2 instances.
 
 ## Architecture
 
 ```text
-                    Internet
-                       |
-              +--------+--------+
-              |                 |
-              v                 v
-      EC2 Backend         EC2 Frontend
-      Flask :5050         Express
-              |
-              |
-        Backend API
+                 Internet
+                    |
+          +---------+---------+
+          |                   |
+          v                   v
+   EC2 Instance 1       EC2 Instance 2
+   Flask Backend        Express Frontend
+     Port 5050            Frontend Port
+          |                   |
+          +---------+---------+
+                    |
+                 API Calls
 ```
-
-The Flask backend and Express frontend were separated into independent EC2 instances.
 
 ## Backend EC2
 
-The Flask backend was deployed on a dedicated EC2 instance.
+The Flask backend was deployed separately on an EC2 instance.
 
-Backend application:
+Backend:
 
 ```text
 Flask
 Port: 5050
 ```
 
-The backend provides:
+The backend API was tested with:
 
-```text
-/api/hello
-/api/health
+```bash
+curl http://<BACKEND_PUBLIC_IP>:5050/api/hello
 ```
 
 ## Frontend EC2
 
-The Express frontend was deployed on another EC2 instance.
+The Express frontend was deployed on a separate EC2 instance.
 
-The frontend communicates with the Flask backend using the backend server address.
+The frontend communicates with the Flask backend through the backend EC2 public IP.
 
-## Networking
+## Security Configuration
 
-The EC2 Security Groups were configured to permit the required traffic between the frontend and backend.
+The EC2 Security Groups were configured to allow the required application traffic.
 
-The backend port was configured as:
+The backend port used for Flask was:
 
 ```text
-5050
+5050/TCP
 ```
 
-## Verification
+## Result
 
-The backend API was tested using:
+The separate-instance deployment was configured and tested as part of the assignment.
 
-```bash
-curl http://<BACKEND-IP>:5050/api/hello
-```
-
-The frontend was accessed using the public IP address of the frontend EC2 instance.
-
-## Evidence
+### Evidence
 
 Screenshots for Task 2 are available in:
 
@@ -244,31 +286,27 @@ Screenshots for Task 2 are available in:
 screenshots/task2/
 ```
 
-The screenshots document the EC2 instances, networking configuration, commands and application output.
-
 ---
 
-# Task 3 – Docker + Amazon ECR + ECS Fargate + VPC
+# Task 3 — Docker + ECR + ECS + VPC
 
 ## Objective
 
-Containerize the Flask backend and deploy it using:
+Containerize the Flask backend and Express frontend and deploy the containers using:
 
 * Docker
 * Amazon ECR
 * Amazon ECS
 * AWS Fargate
 * Amazon VPC
-* Security Groups
-* CloudWatch Logs
 
 ---
 
-# Dockerization
+# Docker Configuration
 
 ## Flask Dockerfile
 
-The Flask backend was containerized using the following Docker configuration:
+The Flask backend uses a Dockerfile based on Python.
 
 ```dockerfile
 FROM python:3.12-slim
@@ -286,7 +324,7 @@ EXPOSE 5050
 CMD ["python", "app.py"]
 ```
 
-The application listens on:
+The container listens on:
 
 ```text
 5050
@@ -294,23 +332,23 @@ The application listens on:
 
 ---
 
-# Local Docker Testing
+# Docker Compose
 
-The Flask Docker image was built locally and tested using Docker.
+Docker Compose was used for local container testing.
 
-The container port mapping was:
+The backend container exposes:
 
 ```text
 5050:5050
 ```
 
-The API was verified locally using:
+The application was tested locally using:
 
 ```bash
 curl http://localhost:5050/api/hello
 ```
 
-Successful response:
+Expected response:
 
 ```json
 {
@@ -331,25 +369,19 @@ Repository:
 flask-backend
 ```
 
-AWS Region:
+Region:
 
 ```text
 ap-south-1
 ```
 
-ECR image:
+The Docker image was pushed to:
 
 ```text
 883027050039.dkr.ecr.ap-south-1.amazonaws.com/flask-backend:latest
 ```
 
-The Docker image was pushed to Amazon ECR and used by ECS.
-
-The deployed ECS task used image digest:
-
-```text
-sha256:4d50af51c89f067ad807f9f8c07684703b4d40f4d60eeb1a220056f2c0ab8dbe
-```
+The deployed ECS task used the ECR image.
 
 ---
 
@@ -367,46 +399,34 @@ Region:
 ap-south-1
 ```
 
-The cluster uses AWS Fargate for serverless container execution.
-
-## ECS Service
-
-Service:
+Launch type:
 
 ```text
-flask-task-service-tn6bcuuu
+AWS Fargate
 ```
 
-The service successfully reached a steady state after deployment.
-
-The cluster showed:
+Network mode:
 
 ```text
-1 active service
-1 running task
-0 pending tasks
+awsvpc
 ```
+
+The ECS service was configured with one running task.
 
 ---
 
 # ECS Task Definition
 
-Task definition family:
+Task definition:
 
 ```text
 flask-task
 ```
 
-Current revision:
+Revision:
 
 ```text
-Revision 2
-```
-
-Launch type:
-
-```text
-FARGATE
+2
 ```
 
 CPU:
@@ -421,12 +441,6 @@ Memory:
 512 MB
 ```
 
-Network mode:
-
-```text
-awsvpc
-```
-
 Container:
 
 ```text
@@ -439,62 +453,89 @@ Container port:
 5050
 ```
 
-Port mapping:
+Host port:
 
 ```text
-5050:5050
+5050
 ```
 
-The ECS task uses:
+Protocol:
 
 ```text
-ecsTaskExecutionRole
+TCP
 ```
-
-for pulling the ECR image and sending logs to CloudWatch.
 
 ---
 
-# ECS VPC Networking
+# CloudWatch Logging
+
+CloudWatch logging was configured for the ECS task.
+
+Log group:
+
+```text
+/ecs/flask-task
+```
+
+The ECS container successfully produced Flask startup logs.
+
+Example:
+
+```text
+Serving Flask app 'app'
+Debug mode: off
+Running on all addresses (0.0.0.0)
+Running on http://127.0.0.1:5050
+```
+
+The ECS task was therefore successfully starting the Flask application inside the container.
+
+---
+
+# VPC Configuration
 
 The ECS task was deployed using:
 
 ```text
-Network mode: awsvpc
-```
-
 VPC:
-
-```text
 vpc-0f82fc90d97cc83d0
 ```
 
-The task was associated with the configured VPC subnets.
-
-The ECS task received a network interface (ENI):
+Network mode:
 
 ```text
-eni-08e0e85232ac842b3
+awsvpc
 ```
 
-The task received:
+Subnets used:
 
 ```text
-Private IP: 172.31.26.126
-Public IP: 52.66.218.254
+subnet-07c1563da0b1c1a24
+subnet-06dd99f2a6b5d9e2c
+subnet-039474f7f39b0f2c3
 ```
 
-Public IP assignment was enabled.
+The ECS task received a public IP address.
+
+Example ECS task network configuration:
+
+```text
+Private IP:
+172.31.26.126
+
+Public IP:
+52.66.218.254
+```
 
 ---
 
-# VPC Route Table
+# Route Table
 
 The subnet route table contained:
 
 ```text
 172.31.0.0/16 → local
-0.0.0.0/0     → Internet Gateway
+0.0.0.0/0      → Internet Gateway
 ```
 
 Internet Gateway:
@@ -503,265 +544,271 @@ Internet Gateway:
 igw-08f6f6b90b9e4483a
 ```
 
-This provides the subnet with a route towards the Internet.
+This provided the subnet with a route toward the internet.
 
 ---
 
 # Security Group
 
-The ECS task used Security Group:
+The ECS task used:
 
 ```text
+Security Group:
 sg-0d20e2bf8569ee252
 ```
 
-The security configuration was used to permit the required network traffic to the ECS task.
+The Security Group allowed inbound traffic required for testing.
 
 ---
 
-# CloudWatch Logs
+# ECS Connectivity Issue
 
-CloudWatch logging was enabled in Task Definition revision 2.
-
-Log group:
-
-```text
-/ecs/flask-task
-```
-
-Log driver:
-
-```text
-awslogs
-```
-
-Region:
-
-```text
-ap-south-1
-```
-
-The ECS container successfully generated Flask startup logs.
-
-Important logs included:
-
-```text
-* Serving Flask app 'app'
-* Debug mode: off
-* Running on all addresses (0.0.0.0)
-* Running on http://127.0.0.1:5050
-* Running on http://172.31.26.126:5050
-```
-
-These logs confirm that the Flask application started successfully inside the ECS container and was listening on port 5050.
-
----
-
-# ECS Deployment Troubleshooting
-
-During deployment, the ECS service initially experienced two issues.
-
-## Issue 1 – IAM Execution Role
-
-ECS initially reported:
-
-```text
-ECS was unable to assume the role
-'ecsTaskExecutionRole'
-```
-
-The task execution role configuration was corrected and the task was subsequently launched successfully.
-
----
-
-## Issue 2 – Docker Image Architecture
-
-An initial deployment reported:
-
-```text
-CannotPullContainerError
-
-image Manifest does not contain descriptor matching platform
-'linux/amd64'
-```
-
-This was related to the Docker image architecture.
-
-The image was rebuilt/pushed with the appropriate architecture and the ECS task subsequently started successfully.
-
----
-
-# Current Task 3 Status
-
-The Flask backend container is successfully running on ECS Fargate.
-
-The ECS task shows:
-
-```text
-Last status: RUNNING
-Desired status: RUNNING
-```
-
-The container is:
-
-```text
-flask-backend
-```
-
-The image is:
-
-```text
-flask-backend:latest
-```
-
-The application is listening on:
+The Flask container successfully started inside ECS and CloudWatch confirmed that the application was listening on:
 
 ```text
 0.0.0.0:5050
 ```
 
-CloudWatch logs confirm successful Flask startup.
+The ECS task also received a public IP.
 
-The remaining issue is external connectivity to the public IP and port 5050. Requests from the local machine to the ECS public IP timed out even though the container itself was running successfully.
+However, external testing of:
 
-This issue can be further investigated with the mentor using AWS networking/reachability analysis.
+```bash
+curl http://52.66.218.254:5050/api/hello
+```
+
+timed out.
+
+Local testing of the same Flask application worked successfully:
+
+```bash
+curl http://localhost:5050/api/hello
+```
+
+Response:
+
+```json
+{
+  "message": "Hello from Flask Backend!",
+  "status": "success"
+}
+```
+
+Therefore, the remaining issue is external network connectivity to the ECS task on port 5050 rather than the Flask application itself.
+
+This includes checking the ECS networking configuration, security group/NACL rules, subnet routing and the frontend-to-backend connectivity.
+
+The issue was documented rather than claiming a successful public endpoint without verification.
 
 ---
 
-# Evidence / Screenshots
+# AWS Resources Created
 
-The project contains screenshots documenting the deployment process.
+## EC2
 
-## Task 1
+Used for:
 
-```text
-screenshots/task1/
-```
+* Task 1 — Single EC2 deployment
+* Task 2 — Separate EC2 deployment
 
-Evidence includes:
+## ECR
 
-* EC2 instance
-* Flask backend
-* Express frontend
-* Terminal commands
-* Application output
-
-## Task 2
+Repository:
 
 ```text
-screenshots/task2/
+flask-backend
 ```
 
-Evidence includes:
+## ECS
 
-* Backend EC2
-* Frontend EC2
-* Security Groups
-* Application deployment
-* API testing
-
-## Task 3
+Cluster:
 
 ```text
-screenshots/task3/
+aws-flask-express-cluster
 ```
 
-Evidence includes:
+Task definition:
 
-* ECR repository
-* ECR image
-* ECS cluster
-* ECS service
-* Running ECS task
-* Task definition
-* Port mapping
-* VPC configuration
-* Subnets
-* Security Group
-* Public IP
-* Route table
-* Internet Gateway
-* CloudWatch Logs
-* Flask container startup
+```text
+flask-task
+```
+
+Launch type:
+
+```text
+Fargate
+```
+
+## VPC
+
+Used for ECS networking with:
+
+```text
+awsvpc
+```
+
+## CloudWatch
+
+Used to collect ECS container logs.
+
+---
+
+# Local Docker Testing
+
+To build the Flask Docker image:
+
+```bash
+docker build -t flask-test .
+```
+
+To run the container:
+
+```bash
+docker run --rm -p 5050:5050 flask-test
+```
+
+If port 5050 is already being used, another host port can be mapped:
+
+```bash
+docker run --rm -p 5051:5050 flask-test
+```
+
+The application can then be tested with:
+
+```bash
+curl http://localhost:5050/api/hello
+```
+
+or:
+
+```bash
+curl http://localhost:5051/api/hello
+```
 
 ---
 
 # GitHub Repository
 
-Complete project source code is available on GitHub:
+GitHub repository:
 
 https://github.com/bhavanagowda28/AWS-Flask-Express-Deployment
 
+The repository contains the application source code, Docker configuration and deployment documentation.
+
 ---
 
-# Deployment Summary
+# Deployment Evidence
 
-| Task   | Deployment                                | Status                                                 |
-| ------ | ----------------------------------------- | ------------------------------------------------------ |
-| Task 1 | Flask + Express on Single EC2             | Completed                                              |
-| Task 2 | Flask + Express on Separate EC2 Instances | Completed                                              |
-| Task 3 | Docker + ECR + ECS Fargate + VPC          | Deployed / External connectivity under troubleshooting |
+Screenshots and command outputs are included with the submission.
+
+Recommended evidence organization:
+
+```text
+screenshots/
+│
+├── task1/
+│   ├── EC2-instance.png
+│   ├── security-group.png
+│   ├── backend-test.png
+│   └── frontend-test.png
+│
+├── task2/
+│   ├── backend-ec2.png
+│   ├── frontend-ec2.png
+│   ├── security-group.png
+│   └── application-test.png
+│
+└── task3/
+    ├── ecr-repository.png
+    ├── ecr-image.png
+    ├── ecs-cluster.png
+    ├── ecs-service.png
+    ├── ecs-task-running.png
+    ├── task-definition.png
+    ├── vpc.png
+    ├── subnet.png
+    ├── route-table.png
+    ├── security-group.png
+    ├── cloudwatch-logs.png
+    └── ecs-networking.png
+```
 
 ---
 
 # Cost Management
 
-AWS resources can generate charges when they are running.
+AWS resources were created for learning and assignment purposes.
 
-After completing the required screenshots and submission:
+To avoid unnecessary AWS charges:
 
-* Stop EC2 instances when they are not required.
-* Stop/remove ECS services and running tasks when they are no longer required.
-* Delete unused load balancers, NAT gateways, EBS volumes and other billable resources.
-* Delete unused ECR images/repositories if they are no longer required.
-* Check the AWS Billing dashboard after cleanup.
+* Stop EC2 instances when they are not being used.
+* Stop or terminate unused EC2 resources.
+* Delete unused ECS services/tasks.
+* Remove unused ECR images if no longer required.
+* Check running resources in the AWS Console.
+* Monitor AWS Billing regularly.
 
-The AWS resources should not be left running unnecessarily after evaluation.
+For final submission, AWS resources should be stopped or removed where appropriate after screenshots and evidence have been captured.
 
 ---
 
-# Final Submission Structure
+# Learning Outcomes
 
-The final submission ZIP should contain:
+Through this project, I practiced:
 
-```text
-AWS_Bhavana/
-│
-├── README.md
-│
-├── Task-1-Single-EC2/
-│   ├── backend/
-│   ├── frontend/
-│   └── screenshots/
-│
-├── Task-2-Separate-EC2/
-│   ├── backend/
-│   ├── frontend/
-│   └── screenshots/
-│
-└── Task-3-ECR-ECS-VPC/
-    ├── backend/
-    ├── frontend/
-    └── screenshots/
-```
-
-The complete folder should be compressed as:
-
-```text
-AWS_Bhavana.zip
-```
-
-Only the ZIP file should be uploaded to the assignment submission portal.
+* Deploying applications on Amazon EC2
+* Working with Linux servers
+* Configuring Security Groups
+* Running Flask applications
+* Running Express.js applications
+* Creating Docker images
+* Running Docker containers
+* Using Docker port mappings
+* Creating and using Amazon ECR
+* Creating ECS clusters
+* Creating ECS task definitions
+* Deploying containers using AWS Fargate
+* Configuring VPC networking
+* Working with subnets and route tables
+* Configuring public IP networking
+* Using CloudWatch Logs
+* Troubleshooting AWS networking issues
+* Using Git and GitHub for version control
 
 ---
 
 # Conclusion
 
-This project demonstrates three approaches for deploying a Flask backend and Express frontend:
+This project demonstrates the progression from a traditional EC2 deployment to a containerized AWS deployment.
 
-1. Traditional deployment on a single EC2 instance.
-2. Distributed deployment using separate EC2 instances.
-3. Containerized deployment using Docker, Amazon ECR, Amazon ECS Fargate and Amazon VPC.
+The three scenarios covered are:
 
-The project also demonstrates AWS networking, security groups, container image management, ECS task definitions, Fargate deployment and CloudWatch logging.
+```text
+Task 1
+Single EC2
+      ↓
+Flask + Express
+```
+
+```text
+Task 2
+Separate EC2 Instances
+      ↓
+Flask EC2 + Express EC2
+```
+
+```text
+Task 3
+Docker
+  ↓
+ECR
+  ↓
+ECS/Fargate
+  ↓
+VPC
+  ↓
+CloudWatch
+```
+
+The Flask application was successfully containerized and launched through ECS/Fargate, with CloudWatch confirming that the container was running and listening on port 5050. The remaining external connectivity issue is documented in the Task 3 troubleshooting section.
 
