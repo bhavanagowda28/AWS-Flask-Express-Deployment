@@ -3,8 +3,7 @@ const express = require("express");
 const app = express();
 
 const PORT = 3000;
-const BACKEND_URL = "http://127.0.0.1:5050";
-
+const BACKEND_URL = "http://backend:5050";
 
 // Serve files from the public folder
 app.use(express.static("public"));
@@ -52,6 +51,8 @@ app.listen(PORT, "0.0.0.0", () => {
     );
 
 });
+
+
 
 
 
